@@ -33,11 +33,7 @@ SECRET_KEY = os.getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("1", "true", "yes")
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "https://mattress-q9kj.onrender.com",
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
