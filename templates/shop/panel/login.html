@@ -40,7 +40,12 @@
         <button type="submit" class="btn btn-primary">{{ t.login }}</button>
       </form>
 
-      <a class="auth-back" href="{% url 'home' %}">{{ t.back_site }}</a>
+      <div class="auth-links">
+        {% if registration_open %}
+          <a class="auth-back" href="{% url 'panel_register' %}?lang={{ panel_lang }}">{{ t.no_account }}</a>
+        {% endif %}
+        <a class="auth-back" href="{% url 'home' %}">{{ t.back_site }}</a>
+      </div>
     </section>
   </main>
 {% endblock %}

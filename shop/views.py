@@ -1,12 +1,15 @@
 import json
+import os
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods
 
+from .admin_forms import PanelRegistrationForm
 from .forms import ProductForm
 from .models import Product
 from .panel_utils import get_panel_lang, get_panel_strings, render_panel
@@ -56,6 +59,15 @@ def _msg(request, key: str):
     return get_panel_strings(lang).get(key, key)
 
 
+def _registration_open():
+    if not get_user_model().objects.filter(is_staff=True).exists():
+        return True, False
+    if os.getenv("PANEL_ALLOW_REGISTRATION", "true").lower() in ("1", "true", "yes"):
+        key = os.getenv("PANEL_REGISTRATION_KEY", "").strip()
+        return True, bool(key)
+    return False, False
+
+
 @require_http_methods(["GET", "POST"])
 def panel_login(request):
     if request.user.is_authenticated and request.user.is_staff:
@@ -73,7 +85,39 @@ def panel_login(request):
             return redirect(next_url)
         error = t["login_error"]
 
-    return render_panel(request, "shop/panel/login.html", {"error": error})
+    return render_panel(
+        request,
+        "shop/panel/login.html",
+        {"error": error, "registration_open": _registration_open()[0]},
+    )
+
+
+@require_http_methods(["GET", "POST"])
+def panel_register(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("panel_dashboard")
+
+    registration_open, require_invite = _registration_open()
+    t = get_panel_strings(get_panel_lang(request))
+
+    if not registration_open:
+        return render_panel(
+            request,
+            "shop/panel/register.html",
+            {"form": None, "closed": True},
+        )
+
+    if request.method == "POST":
+        form = PanelRegistrationForm(request.POST, require_invite=require_invite)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, t["register_success"])
+            return redirect("panel_dashboard")
+    else:
+        form = PanelRegistrationForm(require_invite=require_invite)
+
+    return render_panel(request, "shop/panel/register.html", {"form": form, "closed": False})
 
 
 @login_required(login_url="panel_login")
