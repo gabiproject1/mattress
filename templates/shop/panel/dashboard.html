@@ -1,0 +1,119 @@
+{% extends "shop/panel/base.html" %}
+
+{% block title %}{{ t.products }}{% endblock %}
+
+{% block body %}
+  <div class="panel-layout">
+    {% include "shop/panel/_sidebar.html" with active="products" %}
+
+    <div class="panel-content">
+      <header class="panel-topbar">
+        <button type="button" class="panel-burger" id="panelBurger" aria-label="{{ t.menu }}">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="panel-topbar-title"><strong>{{ t.products }}</strong></div>
+        <a href="{% url 'panel_product_create' %}?lang={{ panel_lang }}" class="btn btn-primary btn-sm">{{ t.new_product }}</a>
+      </header>
+
+      <main class="panel-main">
+        <header class="panel-header panel-header--desktop">
+          <div>
+            <h1>{{ t.products }}</h1>
+            <p>{{ t.products_sub }}</p>
+          </div>
+          <a href="{% url 'panel_product_create' %}?lang={{ panel_lang }}" class="btn btn-primary">{{ t.new_product }}</a>
+        </header>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <section class="panel-card">
+          {% if products %}
+            <div class="table-wrap desktop-only">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>{{ t.image }}</th>
+                    <th>{{ t.name }}</th>
+                    <th>{{ t.price }}</th>
+                    <th>{{ t.old_price }}</th>
+                    <th>{{ t.discount }}</th>
+                    <th>{{ t.promotion }}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for product in products %}
+                    <tr>
+                      <td>
+                        {% if product.display_image %}
+                          <img class="thumb" src="{{ product.display_image }}" alt="{{ product.name_ru }}" />
+                        {% else %}
+                          <span class="thumb-empty">—</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <strong>{{ product.name_ru }}</strong>
+                        <small>{{ product.slug }}</small>
+                      </td>
+                      <td>{{ product.price|floatformat:0 }} ₸</td>
+                      <td>{% if product.old_price %}{{ product.old_price|floatformat:0 }} ₸{% else %}—{% endif %}</td>
+                      <td>{% if product.effective_discount %}-{{ product.effective_discount }}%{% else %}—{% endif %}</td>
+                      <td>
+                        {% if product.is_promotion %}
+                          <span class="badge badge-sale">{{ t.promotion_yes }}</span>
+                        {% else %}
+                          <span class="badge badge-muted">{{ t.promotion_no }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="row-actions">
+                        <a href="{% url 'panel_product_edit' product.pk %}?lang={{ panel_lang }}">{{ t.edit }}</a>
+                        <form method="post" action="{% url 'panel_product_delete' product.pk %}" onsubmit="return confirm('{{ t.delete_confirm }}');">
+                          {% csrf_token %}
+                          <button type="submit" class="link-danger">{{ t.delete }}</button>
+                        </form>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mobile-cards mobile-only">
+              {% for product in products %}
+                <article class="product-mobile-card">
+                  {% if product.display_image %}
+                    <img class="product-mobile-card__img" src="{{ product.display_image }}" alt="{{ product.name_ru }}" />
+                  {% endif %}
+                  <div class="product-mobile-card__body">
+                    <h3>{{ product.name_ru }}</h3>
+                    <p class="product-mobile-card__slug">{{ product.slug }}</p>
+                    <div class="product-mobile-card__meta">
+                      <span>{{ product.price|floatformat:0 }} ₸</span>
+                      {% if product.effective_discount %}<span class="badge badge-sale">-{{ product.effective_discount }}%</span>{% endif %}
+                    </div>
+                    <div class="product-mobile-card__actions">
+                      <a class="btn btn-ghost btn-sm" href="{% url 'panel_product_edit' product.pk %}?lang={{ panel_lang }}">{{ t.edit }}</a>
+                      <form method="post" action="{% url 'panel_product_delete' product.pk %}" onsubmit="return confirm('{{ t.delete_confirm }}');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm link-danger">{{ t.delete }}</button>
+                      </form>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <p>{{ t.empty }}</p>
+              <a href="{% url 'panel_product_create' %}?lang={{ panel_lang }}" class="btn btn-primary">{{ t.empty_cta }}</a>
+            </div>
+          {% endif %}
+        </section>
+      </main>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "shop/panel/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <div class="panel-layout">
+    {% include "shop/panel/_sidebar.html" with active="products" %}
+
+    <div class="panel-content">
+      <header class="panel-topbar">
+        <button type="button" class="panel-burger" id="panelBurger" aria-label="{{ t.menu }}">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="panel-topbar-title"><strong>{{ title }}</strong></div>
+        <a href="{% url 'panel_dashboard' %}?lang={{ panel_lang }}" class="btn btn-ghost btn-sm">{{ t.back }}</a>
+      </header>
+
+      <main class="panel-main">
+        <header class="panel-header panel-header--desktop">
+          <div>
+            <h1>{{ title }}</h1>
+            <p>{{ t.form_sub }}</p>
+          </div>
+          <a href="{% url 'panel_dashboard' %}?lang={{ panel_lang }}" class="btn btn-ghost">{{ t.back }}</a>
+        </header>
+
+        <section class="panel-card">
+          <form method="post" enctype="multipart/form-data" class="product-form" id="productForm">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-grid">
+              <div class="form-section form-section--wide">
+                <h2>{{ t.section_main }}</h2>
+
+                <label>
+                  <span>{{ t.slug }}</span>
+                  {{ form.slug }}
+                  {% if form.slug.errors %}<em class="field-error">{{ form.slug.errors.0 }}</em>{% endif %}
+                </label>
+
+                <label>
+                  <span>{{ t.input_lang }}</span>
+                  {{ form.source_lang }}
+                </label>
+
+                <label>
+                  <span>{{ t.product_name }}</span>
+                  {{ form.name_source }}
+                </label>
+
+                <label>
+                  <span>{{ t.product_desc }}</span>
+                  {{ form.description_source }}
+                </label>
+
+                <div class="translate-row">
+                  <button type="button" class="btn btn-ghost" id="translateBtn">{{ t.translate_btn }}</button>
+                  <small class="translate-hint">{{ t.translate_hint }}</small>
+                </div>
+
+                <div class="translation-preview" id="translationPreview">
+                  <h3>{{ t.preview_langs }}</h3>
+                  <div class="preview-grid">
+                    <article class="preview-card">
+                      <strong>RU</strong>
+                      <p class="preview-name" id="previewNameRu">—</p>
+                      <p class="preview-desc" id="previewDescRu">—</p>
+                    </article>
+                    <article class="preview-card">
+                      <strong>KZ</strong>
+                      <p class="preview-name" id="previewNameKk">—</p>
+                      <p class="preview-desc" id="previewDescKk">—</p>
+                    </article>
+                    <article class="preview-card">
+                      <strong>EN</strong>
+                      <p class="preview-name" id="previewNameEn">—</p>
+                      <p class="preview-desc" id="previewDescEn">—</p>
+                    </article>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h2>{{ t.section_price }}</h2>
+                <label><span>{{ t.current_price }}</span>{{ form.price }}</label>
+                <label><span>{{ t.old_price_field }}</span>{{ form.old_price }}</label>
+                <label><span>{{ t.discount_field }}</span>{{ form.discount_percent }}</label>
+                <label class="checkbox-row">{{ form.is_promotion }}<span>{{ t.promo_flag }}</span></label>
+                <label class="checkbox-row">{{ form.is_active }}<span>{{ t.show_on_site }}</span></label>
+                <label><span>{{ t.sort_order }}</span>{{ form.sort_order }}</label>
+              </div>
+
+              <div class="form-section">
+                <h2>{{ t.section_image }}</h2>
+                {% if product and product.display_image %}
+                  <img class="preview-image" src="{{ product.display_image }}" alt="preview" />
+                {% endif %}
+                <label><span>{{ t.upload_file }}</span>{{ form.image }}</label>
+                <label><span>{{ t.image_url }}</span>{{ form.image_url }}</label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+              <a href="{% url 'panel_dashboard' %}?lang={{ panel_lang }}" class="btn btn-ghost">{{ t.cancel }}</a>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+{% endblock %}

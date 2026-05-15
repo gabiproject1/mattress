@@ -1,0 +1,46 @@
+{% extends "shop/panel/base.html" %}
+
+{% block title %}{{ t.login }}{% endblock %}
+{% block body_class %}panel-auth{% endblock %}
+
+{% block body %}
+  <main class="auth-shell">
+    <section class="auth-card">
+      <div class="auth-brand">
+        <span class="auth-mark">A</span>
+        <div>
+          <strong>MATRASS</strong>
+          <small>{{ t.admin }}</small>
+        </div>
+      </div>
+
+      <div class="panel-lang-switch panel-lang-switch--auth">
+        {% for code in panel_langs %}
+          <a class="panel-lang-btn{% if panel_lang == code %} is-active{% endif %}" href="?lang={{ code }}">{{ code|upper }}</a>
+        {% endfor %}
+      </div>
+
+      <h1>{{ t.login }}</h1>
+      <p class="auth-sub">{{ t.login_sub }}</p>
+
+      {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        <label>
+          <span>{{ t.username }}</span>
+          <input type="text" name="username" autocomplete="username" required autofocus />
+        </label>
+        <label>
+          <span>{{ t.password }}</span>
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit" class="btn btn-primary">{{ t.login }}</button>
+      </form>
+
+      <a class="auth-back" href="{% url 'home' %}">{{ t.back_site }}</a>
+    </section>
+  </main>
+{% endblock %}

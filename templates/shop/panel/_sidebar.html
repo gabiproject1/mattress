@@ -1,0 +1,32 @@
+<aside class="panel-sidebar" id="panelSidebar">
+  <div class="panel-sidebar-top">
+    <div class="panel-brand">
+      <span class="auth-mark">A</span>
+      <div>
+        <strong>MATRASS</strong>
+        <small>{{ t.admin }}</small>
+      </div>
+    </div>
+    <button type="button" class="panel-close" id="panelClose" aria-label="Close menu">×</button>
+  </div>
+
+  <div class="panel-lang-switch">
+    {% for code in panel_langs %}
+      <a
+        class="panel-lang-btn{% if panel_lang == code %} is-active{% endif %}"
+        href="?lang={{ code }}"
+      >{{ code|upper }}</a>
+    {% endfor %}
+  </div>
+
+  <nav class="panel-nav">
+    <a class="{% if active == 'products' %}is-active{% endif %}" href="{% url 'panel_dashboard' %}?lang={{ panel_lang }}">{{ t.products }}</a>
+    <a href="{% url 'home' %}" target="_blank" rel="noopener">{{ t.open_site }}</a>
+  </nav>
+
+  <form method="post" action="{% url 'panel_logout' %}" class="logout-form">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-ghost btn-sidebar">{{ t.logout }}</button>
+  </form>
+</aside>
+<div class="panel-overlay" id="panelOverlay"></div>
