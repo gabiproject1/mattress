@@ -36,7 +36,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("1", "true", "yes")
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "itsgabi.pythonanywhere.com",
+    "https://mattress-q9kj.onrender.com",
 ]
 
 
