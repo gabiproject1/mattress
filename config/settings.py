@@ -104,13 +104,17 @@ def _database_config():
     if database_url:
         import dj_database_url
 
-        return {
-            "default": dj_database_url.parse(
-                database_url,
-                conn_max_age=600,
-                ssl_require=not DEBUG,
-            )
-        }
+        # Render PostgreSQL: ішкі URL + SSL
+        config = dj_database_url.parse(
+            database_url,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+        config.setdefault("OPTIONS", {})
+        if "sslmode" not in config["OPTIONS"]:
+            config["OPTIONS"]["sslmode"] = "require"
+
+        return {"default": config}
 
     sqlite_path = os.getenv("DATABASE_PATH")
     if sqlite_path:
