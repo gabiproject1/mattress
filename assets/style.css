@@ -594,9 +594,14 @@ p {
 
 .product-meta {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.product-meta .product-tag {
+  flex-shrink: 0;
 }
 
 .product-tag {
@@ -618,7 +623,9 @@ p {
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .price {
@@ -998,8 +1005,61 @@ p {
     order: -1;
   }
 
+  .page-shell {
+    overflow-x: visible;
+  }
+
+  .catalog .container {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    overflow: visible;
+    padding-bottom: 0;
+    scroll-snap-type: none;
+  }
+
   .product-card {
-    flex-basis: min(84vw, 320px);
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    scroll-snap-align: none;
+  }
+
+  .product-media {
+    aspect-ratio: 1.05;
+  }
+
+  .product-meta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .price-block {
+    justify-content: flex-start;
+  }
+
+  .product-body h3 {
+    font-size: 1.45rem;
+    line-height: 1.15;
+  }
+
+  .product-body {
+    padding: 18px;
+    gap: 12px;
+  }
+
+  .product-body p {
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .product-btn {
+    min-height: 52px;
   }
 
   .reviews-grid,
@@ -1026,10 +1086,6 @@ p {
   .faq-copy,
   .footer-grid {
     padding: 26px;
-  }
-
-  .product-body p {
-    min-height: auto;
   }
 
   .footer-bottom p {
