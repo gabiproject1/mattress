@@ -16,7 +16,8 @@ application = get_wsgi_application()
 print("Applying database migrations...", flush=True)
 try:
     call_command("migrate", "--no-input", verbosity=1)
-    print("Migrations applied successfully.", flush=True)
+    call_command("seed_products")
+    print("Migrations and seed completed successfully.", flush=True)
 except Exception as exc:
-    print(f"MIGRATION FAILED: {exc}", file=sys.stderr, flush=True)
+    print(f"STARTUP DB SETUP FAILED: {exc}", file=sys.stderr, flush=True)
     raise

@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
@@ -65,9 +67,9 @@ class Command(BaseCommand):
     help = "Seed demo products and create admin user"
 
     def add_arguments(self, parser):
-        parser.add_argument("--username", default="admin")
-        parser.add_argument("--password", default="admin123")
-        parser.add_argument("--email", default="admin@matrass.local")
+        parser.add_argument("--username", default=os.getenv("ADMIN_USERNAME", "admin"))
+        parser.add_argument("--password", default=os.getenv("ADMIN_PASSWORD", "admin123"))
+        parser.add_argument("--email", default=os.getenv("ADMIN_EMAIL", "admin@matrass.local"))
 
     def handle(self, *args, **options):
         for data in DEFAULT_PRODUCTS:
